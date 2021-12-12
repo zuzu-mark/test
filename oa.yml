@@ -1,0 +1,95 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    k8s-app: oauth2-proxy
+  name: oauth2-proxy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      k8s-app: oauth2-proxy
+  template:
+    metadata:
+      labels:
+        k8s-app: oauth2-proxy
+    spec:
+      containers:
+      - args:
+        - --provider=oidc
+        env:
+        - name: OAUTH2_PROXY_HTTP_ADDRESS
+          value: 0.0.0.0:4180
+        - name: OAUTH2_PROXY_COOKIE_SECRET
+          value: "01234567890123456789012345678912"
+        - name: OAUTH2_PROXY_COOKIE_SECURE
+          value: "false"
+        - name: OAUTH2_PROXY_COOKIE_NAME
+          value: "oauth2_proxy"
+        - name: OAUTH2_PROXY_EMAIL_DOMAINS
+          value: "*"
+        - name: OAUTH2_PROXY_UPSTREAMS
+          #value: http://192.168.163.132:8080/
+          value: http://192.168.163.132/
+        - name: OAUTH2_PROXY_OIDC_ISSUER_URL
+          value: http://192.168.163.132:8080/auth/realms/master
+        - name: OAUTH2_PROXY_CLIENT_ID
+          value: handson
+        - name: OAUTH2_PROXY_CLIENT_SECRET
+          value: 786c8aa0-bf3a-49d5-8f35-057c2438da1e
+          #value: 35ede5e6-8626-4de8-b84f-6bb8dc3076cb
+        - name: OAUTH2_PROXY_REDIRECT_URL
+          value: http://192.168.163.132/oauth2/callback
+        - name: OAUTH2_PROXY_SCOPE
+          value: "openid email profile"
+        - name: OAUTH2_PROXY_PASS_ACCESS_TOKEN
+          value: "true"
+        - name: OAUTH2_PROXY_PASS_USER_HEADERS
+          value: "true"
+        - name: OAUTH2_PROXY_PASS_AUTHORIZATION_HEADER
+          value: "true"
+        - name: OAUTH2_PROXY_SKIP_PROVIDER_BUTTON
+          value: "true"
+        - name: OAUTH2_PROXY_INSECURE_OIDC_ALLOW_UNVERIFIED_EMAIL
+          value: "true"
+        image: quay.io/oauth2-proxy/oauth2-proxy:latest
+        imagePullPolicy: Always
+        name: oauth2-proxy
+        ports:
+        - containerPort: 4180
+          protocol: TCP
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    k8s-app: oauth2-proxy
+  name: oauth2-proxy
+spec:
+  ports:
+  - name: http
+    port: 4180
+    protocol: TCP
+    targetPort: 4180
+  selector:
+    k8s-app: oauth2-proxy
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: oauth2-proxy
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: oauth.sample.com
+    http:
+      paths:
+      - path: /oauth2
+        pathType: Prefix
+        backend:
+          service:
+            name: oauth2-proxy
+            port:
+              number: 4180
