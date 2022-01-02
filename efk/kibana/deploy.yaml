@@ -85,15 +85,18 @@ metadata:
     component: kibana
 data:
   kibana.yml: |
+    server.publicBaseUrl: "http://192.168.163.132"
     server.name: kibana
     server.host: "0"
     elasticsearch.hosts: [ "http://elasticsearch:9200" ]
     i18n.locale: “ja-JP”
     xpack.security.authc.providers:
-      anonymous.anonymous1:
+      basic.basic1:
         order: 0
+      anonymous.anonymous1:
+        order: 1
         #credentials: "elasticsearch_anonymous_user"
         credentials:
-          username: "elastic"
-          password: "v24qc15WWtxbIgt4boR2"
+          username: "any"
+          password: "test55"
 ---
