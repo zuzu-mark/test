@@ -1,0 +1,45 @@
+post5g@virtual-machine:~/ws/backup/efk/elasticsearch$ make c
+kubectl exec -it elasticsearch-0 -n kube-logging -- bin/elasticsearch-setup-passwords auto -b
+Changed password for user apm_system
+PASSWORD apm_system = yfi4n1UYUIp9cP4pOyxc
+
+Changed password for user kibana
+PASSWORD kibana = sWPBgKlDEEVB3RXGfFrd
+
+Changed password for user logstash_system
+PASSWORD logstash_system = 8Ai1fmrk8GLogXVhBnxn
+
+Changed password for user beats_system
+PASSWORD beats_system = xJmJ3fKQZfxoxywpp9lW
+
+Changed password for user remote_monitoring_user
+PASSWORD remote_monitoring_user = ajQLzdnOZhJkUACXaQ5o
+
+Changed password for user elastic
+PASSWORD elastic = BoPtN7NSn1lfsxAcLyRR
+
+post5g@virtual-machine:~/ws/backup/efk/elasticsearch$ 
+
+---
+
+curl http://elastic:BoPtN7NSn1lfsxAcLyRR@localhost:9200
+Handling connection for 9200
+{
+  "name" : "node-1",
+  "cluster_name" : "password-protected-efk",
+  "cluster_uuid" : "moTNNBuQQaeR9Wb-W7Vj1A",
+  "version" : {
+    "number" : "6.8.6",
+    "build_flavor" : "default",
+    "build_type" : "docker",
+    "build_hash" : "3d9f765",
+    "build_date" : "2019-12-13T17:11:52.013738Z",
+    "build_snapshot" : false,
+    "lucene_version" : "7.7.2",
+    "minimum_wire_compatibility_version" : "5.6.0",
+    "minimum_index_compatibility_version" : "5.0.0"
+  },
+  "tagline" : "You Know, for Search"
+}
+post5g@virtual-machine:~/ws/backup/efk/elasticsearch$
+

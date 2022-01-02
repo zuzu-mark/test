@@ -1,0 +1,5 @@
+cd /usr/share/kibana/node_modules/x-pack/plugins/translations/translations
+wget https://raw.githubusercontent.com/elastic/kibana/master/x-pack/plugins/translations/translations/ja-JP.json
+
+/usr/share/kibana/x-pack/plugins/translations/translations
+

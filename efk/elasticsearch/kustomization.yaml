@@ -1,0 +1,10 @@
+# ref.
+#  https://www.deepnetwork.com/blog/2020/03/13/password-protected-efk-stack-on-k8s.html
+namespace: kube-logging
+
+resources:
+- deploy.yaml
+  #- statefulset.yaml
+  #- service.yaml
+  #- configmap.yaml
+  #- pvc.yaml
