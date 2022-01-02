@@ -29,7 +29,7 @@ spec:
       containers:
       - name: kibana
         #image: docker.elastic.co/kibana/kibana:6.5.4
-        image: docker.elastic.co/kibana/kibana:7.6.1
+        image: docker.elastic.co/kibana/kibana:7.16.2
         env:
         - name:  LANG
           value: ja_JP.UTF-8
@@ -75,7 +75,7 @@ metadata:
     component: kibana
 data:
   elasticsearch_username: elastic
-  elasticsearch_password: L3ZhHsoO5TpNUEUJ0E3k # it needs to be changed
+  elasticsearch_password: v24qc15WWtxbIgt4boR2 # it needs to be changed
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -89,4 +89,11 @@ data:
     server.host: "0"
     elasticsearch.hosts: [ "http://elasticsearch:9200" ]
     i18n.locale: “ja-JP”
+    xpack.security.authc.providers:
+      anonymous.anonymous1:
+        order: 0
+        #credentials: "elasticsearch_anonymous_user"
+        credentials:
+          username: "elastic"
+          password: "v24qc15WWtxbIgt4boR2"
 ---

@@ -44,7 +44,7 @@ spec:
       containers:
       - name: elasticsearch
         #image: docker.elastic.co/elasticsearch/elasticsearch:6.8.6
-        image: docker.elastic.co/elasticsearch/elasticsearch:7.6.1
+        image: docker.elastic.co/elasticsearch/elasticsearch:7.16.2
         imagePullPolicy: IfNotPresent
         env:
         - name: discovery.type
@@ -102,4 +102,9 @@ data:
     xpack.graph.enabled: false
     xpack.watcher.enabled: false
     xpack.ml.enabled: false
+    xpack.security.authc:
+      anonymous:
+        username: anonymous_user
+        roles: kibana_dashboard_only_user
+        authz_exception: true
 ---
