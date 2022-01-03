@@ -1,0 +1,25 @@
+
+input {
+  jdbc {
+    jdbc_driver_library => "mysql-connector-java-5.1.39-bin.jar"
+    jdbc_driver_class => "com.mysql.jdbc.Driver"
+    jdbc_connection_string => "jdbc:mysql://mysql-svc:3306/redmine"
+    jdbc_user => "redmine"
+    jdbc_password => "example"
+    jdbc_default_timezone => Japan
+    statement => "select * from books where updated_at > :sql_last_run"
+    type => "books"
+    tracking_column => updated_at
+    jdbc_default_timezone => Japan
+  }
+}
+
+output {
+  elasticsearch {
+    hosts    => [ 'http://elasticsearch:9200' ]
+    user     => 'elastic'
+    password => 'v24qc15WWtxbIgt4boR2'
+    index => "%{type}"
+    document_id => "%{type}_%{id}"
+  }
+}

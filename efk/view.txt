@@ -1,0 +1,100 @@
+$ cd /opt/bitnami/apps/redmine/htdocs
+$ git clone https://github.com/onozaty/redmine-view-customize.git plugins/view_customize
+
+cp -rdfp /usr/src/redmine/files/activerecord-compatible_legacy_migration-0.1.2/ /usr/local/bundle/gems/
+bundle install --without development test
+bundle exec rake redmine:plugins:migrate RAILS_ENV=production
+
+
+// sudo cp -rfdp ../../../redmine/plugin/activerecord-compatible_legacy_migration-0.1.2/ .
+
+ 29           args: ['cp /usr/src/redmine/files/docker-entrypoint.sh / && cp /usr/src/redmine/plugins/config.ru /usr/src/redmine/config.ru && /docker-entrypoint.sh rail    s server -b 0.0.0.0']↲
+
+
+====
+
+ref.
+https://qiita.com/sioaji/items/08036a1960f3d8f0a9e6
+
+
+/* 他のページを取り込む */
+$(function(){
+  /* TESTプロジェクトのみ対象 */
+  if($('body').hasClass('project-test'))
+  {
+    var $hideExcelLink = $("<a href='#' >hideExcel</a>"); 
+    var $myFrame = $("<iframe class='autoSizeAdjust' width='100%' height='400px' frameborder='0' src='http://127.0.0.1/ShareInfo/mySchedule/mySchedule.html' scrolling='auto'></iframe>");
+
+    /* Excelページを最後に追加 */
+    $('#content').after(
+      $hideExcelLink, //非表示ボタン
+      $myFrame        //Excelページ
+    );
+
+    /* Excelページの非表示 */
+    var func = function(){
+      $myFrame.hide();
+      $(this).hide(); //hideExcelのリンクを非表示に
+      return false;
+    };
+
+    $hideExcelLink.click(func);
+  }
+  else
+  {
+    //DO NOTHING
+  }
+});
+---
+====================
+logstash ディレクトリ権限
+
+ sudo chown -R 1000:1000 .
+
+
+
+----
+
+
+jdbc_connection_string => "jdbc:mysql://localhost:3306/xyz?useSSL=false&useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&autoReconnect=true"
+
+jdbc_connection_string => "jdbc:mysql://localhost:3306/sc_education?useSSL=false&useUnicode=true&characterEncoding=utf8"
+---
+input {
+    jdbc {
+        jdbc_connection_string => "jdbc:postgresql://localhost:5432/atlasdb?useTimezone=true&useLegacyDatetimeCode=false&serverTimezone=UTC&useSSL=false&useUnicode=true&characterEncoding=utf8"
+        jdbc_user => "atlas"
+        jdbc_password => "atlas"
+        jdbc_validate_connection => true
+        jdbc_driver_library => "/lib/postgres-42-test.jar"
+        jdbc_driver_class => "org.postgresql.Driver"
+        schedule => "* * * * *"
+        statement => "SELECT * from naver_city"
+   }
+   stdin {
+        codec => plain { charset => "UTF-8"}
+   }
+}
+output {
+ elasticsearch {
+        hosts => [ "localhost:9200" ]
+        index => "2020-04-23-2"
+        doc_as_upsert => true
+        action => "update"
+        document_id => "%{code}"
+        }
+ stdout { codec => rubydebug }
+}
+
+Database changed
+mysql> select * from issues
+    -> ;
++----+------------+------------+---------+-------------+----------+-------------+-----------+----------------+-------------+------------------+-----------+--------------+---------------------+---------------------+------------+------------+-----------------+-----------+---------+------+------+------------+-----------+
+| id | tracker_id | project_id | subject | description | due_date | category_id | status_id | assigned_to_id | priority_id | fixed_version_id | author_id | lock_version | created_on          | updated_on          | start_date | done_ratio | estimated_hours | parent_id | root_id | lft  | rgt  | is_private | closed_on |
++----+------------+------------+---------+-------------+----------+-------------+-----------+----------------+-------------+------------------+-----------+--------------+---------------------+---------------------+------------+------------+-----------------+-----------+---------+------+------+------------+-----------+
+|  1 |          1 |          2 | dd      |             | NULL     |        NULL |         1 |              1 |           3 |             NULL |         1 |            2 | 2022-01-03 02:13:52 | 2022-01-03 07:56:34 | 2022-01-03 |         10 |              10 |      NULL |       1 |    1 |    2 |          0 | NULL      |
+|  2 |          1 |          2 | ff      |             | NULL     |        NULL |         1 |           NULL |           2 |             NULL |         1 |            0 | 2022-01-03 07:47:26 | 2022-01-03 07:47:26 | 2022-01-03 |          0 |            NULL |      NULL |       2 |    1 |    2 |          0 | NULL      |
++----+------------+------------+---------+-------------+----------+-------------+-----------+----------------+-------------+------------------+-----------+--------------+---------------------+---------------------+------------+------------+-----------------+-----------+---------+------+------+------------+-----------+
+2 rows in set (0.00 sec)
+
+mysql>

@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: logstash
+spec:
+  selector:
+    matchLabels:
+      component: logstash
+  template:
+    metadata:
+      labels:
+        component: logstash
+    spec:
+      containers:
+      - name: logstash
+        image: docker.elastic.co/logstash/logstash:7.16.2
+        #command: ['tail']
+        #args: ['-f', '/dev/null']
+        command: ['logstash']
+        args: ['-f', '/usr/share/logstash/pipeline/logstash.conf']
+        env:
+        - name:  LANG
+          value: ja_JP.UTF-8
+        volumeMounts:
+        - name: logstash-data
+          mountPath: /usr/share/logstash/pipeline/
+      volumes:
+        - name: logstash-data
+          hostPath:
+            path: /minikube_dir/logstash/data
+            type: DirectoryOrCreate

@@ -1,0 +1,7 @@
+namespace: kube-logging
+
+resources:
+- deploy.yaml
+  #- deployment.yaml
+  #- service.yaml
+  #- configmap.yaml

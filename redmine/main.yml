@@ -1,0 +1,87 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redmine-deployment
+  labels:
+    app: redmine
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redmine
+  template:
+    metadata:
+      labels:
+        app: redmine
+    spec:
+      containers:
+              #- image: redmine:3.4.10
+              #- image: redmine:2.6.10
+        - image: redmine:4.0
+          name: redmine
+          ports:
+            - containerPort: 3000
+              #command: ['tail']
+              #args: ['-f', '/dev/null']
+          command: ['/bin/sh', '-c']
+          # for plugins-development
+          # args: ['cp /usr/src/redmine/plugins/config.ru /usr/src/redmine/config.ru && cp /usr/src/redmine/plugins/docker-entrypoint.sh / && /docker-entrypoint.sh rails server -b 0.0.0.0']
+          args: ['cp /usr/src/redmine/files/docker-entrypoint.sh / && cp /usr/src/redmine/plugins/config.ru /usr/src/redmine/config.ru && /docker-entrypoint.sh rails server -b 0.0.0.0']
+          env:
+            - name: REDMINE_DB_MYSQL
+              value: mysql-svc
+            - name: REDMINE_DB_PASSWORD
+              value: example
+            - name: RAILS_RELATIVE_URL_ROOT
+              value: "/redmine"
+          volumeMounts:
+            - name: redmine-files
+              mountPath: /usr/src/redmine/files
+            - name: redmine-plugins
+              mountPath: /usr/src/redmine/plugins
+            - name: redmine-themes
+              mountPath: /usr/src/redmine/public/themes
+      volumes:
+        - name: redmine-files
+          hostPath:
+            path: /minikube_dir/redmine/files
+            type: DirectoryOrCreate
+        - name: redmine-plugins
+          hostPath:
+            path: /minikube_dir/redmine/plugins
+            type: DirectoryOrCreate
+        - name: redmine-themes
+          hostPath:
+            path: /minikube_dir/redmine/themes
+            type: DirectoryOrCreate
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: redmine-svc
+spec:
+  ports:
+    - port: 9081
+      name: redmine
+      targetPort: 3000
+  selector:
+    app: redmine
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: redmine-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+  - host: red.sample.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: redmine-svc
+            port:
+              number: 9081
