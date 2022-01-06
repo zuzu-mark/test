@@ -11,6 +11,7 @@ metadata:
     #nginx.ingress.kubernetes.io/auth-url: http://oauth2-proxy.default.svc.cluster.local/oauth2/auth
     nginx.ingress.kubernetes.io/auth-url: "https://192.168.163.132/oauth2/auth"
     nginx.ingress.kubernetes.io/auth-signin: "https://192.168.163.132/oauth2/start?rd=$escaped_request_uri"
+    #nginx.ingress.kubernetes.io/auth-signin: "https://www.google.com"
     #nginx.ingress.kubernetes.io/auth-response-headers: "x-auth-request-user, x-auth-request-email, x-auth-request-access-token"
   
 spec:
